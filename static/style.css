@@ -1,0 +1,132 @@
+.nav { 
+    text-align: right; 
+    font-size: 1.0em; 
+    padding: 0.3em;
+    margin-bottom: 1em; 
+}
+
+#nav2 {
+    margin-bottom: 1em;
+    margin-left: 7%;
+    float: left;
+}
+
+#login_form {
+    width: 50%;
+    margin: auto;
+}
+
+.login_text {
+    width: 100%;
+    margin: auto;
+}
+
+#new_thread {
+    margin-right: 7%;
+    float: right;
+}
+
+.post {
+    width: 100%;
+    margin-top: 5px;
+    resize: none;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.center {
+    margin: auto;
+}
+
+.clear {
+    clear: both;
+}
+
+th, .nav {
+    background: #fafafa; 
+}
+
+.flash { 
+    background: #CEE5F5; 
+    padding: 0.5em;
+    border: 1px solid #AACBE2; 
+    margin-bottom: 10px;
+}
+
+.thread_container {
+    background: #ff0;
+    margin: 10px;
+    padding: 30px;
+    border: 0px none;
+}
+
+.error { 
+    background: #F0D6D6; 
+    padding: 0.5em; 
+}
+
+body { 
+    font-family: sans-serif; 
+    background: #eee; 
+}
+
+a, h1, h2, th { 
+    color: #377BA8; 
+}
+
+h1, h2, th { 
+    font-family: 'Georgia', serif; 
+    margin: 0; 
+}
+
+h1 { 
+    border-bottom: 2px solid #eee; 
+}
+
+th { 
+    font-size: 1.2em; 
+}
+
+h2 {
+    font-size: 1.0em;
+}
+
+.page { 
+    margin: 2em auto; 
+    width: 70%; 
+    border: 5px solid #ccc;
+    padding: 0.8em; 
+    background: white; 
+}
+
+table {
+    border-collapse: collapse;
+    border: 3px solid #ccc;
+    width: 90%;
+    margin: auto;
+}
+
+td, th {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.add-entry { 
+    font-size: 0.9em; 
+    border-bottom: 1px solid #ccc; 
+}
+
+.add-entry dl { 
+    font-weight: bold; 
+}
+
+.minimize {
+    width: 150px;
+    text-align: center;
+}

@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="admin">
+    <form name="admin_commands" method="POST" action="{{url_for('admin_home')}}">
+        <input type="SUBMIT" name="action" value="populate_db">
+        <input type="SUBMIT" name="action" value="reset_db">
+    </form>
+</div>
+{% endblock %}

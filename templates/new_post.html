@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="new_post_page">
+        <table>
+            <tr>
+                <th>
+                    New Post
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <form name="new_post" method="POST" action="{{url_for('new_post', thread_id=thread_id)}}">
+                        <textarea class="post" name="message" cols="75" rows="15"></textarea>
+                        <br>
+                        <input type="SUBMIT" name="submit_post" value="Post" style="margin-top:8px;float:right;width:80px">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

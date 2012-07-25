@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div id="new_thread_form">
+        <form name="new_thread" action="{{url_for('new_thread', forum_id=forum_id)}}" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        Topic:<br>
+                        <input class="post" type="TEXT" name="topic"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Message:<br>
+                        <textarea class="post" name="message" cols="75" rows="15"></textarea>
+                        <br>
+                        <input type="SUBMIT" name="submit_post" value="Post" style="margin-top:8px;float:right;width:80px">
+                    </td>
+                </tr>
+            </table>
+            <input type="HIDDEN" name="forum" value="{{forum_id}}"/>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div id="nav2">
+        <h2><a href="{{url_for('home')}}">Index</a> > {{forum_name}}</h2>
+    </div>
+
+    <div id="new_thread">
+        <h2><a href="{{url_for('new_thread', forum_id=forum_id)}}">New Thread</a></h2>
+    </div>
+    <div class="clear"></div>
+
+    <div id="thread_list">
+        <table>
+            <tr>
+                <th>Topic</th>
+                <th class="minimize">Author</th>
+                <th class="minimize">Posts</th>
+            </tr>
+            {% if threads %}
+                {% for thread in threads %}
+                <tr>
+                    <td>
+                        <a href="{{url_for('view_thread', thread_id=thread['id'])}}">{{thread['name']}}</a>
+                    </td>
+                    <td class="minimize">{{thread['author']}}</td>
+                    <td class="minimize">{{thread['post_count']}}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan=3 align="center">There are no threads in this forum. <a href="{{url_for('new_thread', forum_id=forum_id)}}">Start one!</a></td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

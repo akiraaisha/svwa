@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div id="nav2">
+        <h2><a href="{{url_for('home')}}">Index</a> > <a href="{{url_for('view_forum', forum_id=forum_id)}}">{{forum_name}}</a> > {{thread_topic}}</h2>
+    </div>
+
+    <div id="new_thread">
+        <h2><a href="{{url_for('new_post', thread_id=thread_id)}}">New Reply</a></h2>
+    </div>
+    <div class="clear"></div>
+
+    <div class="thread_page">
+        <table>
+            <tr>
+                <th colspan=2 class="thread_topic">{{thread_topic}}</th>
+            </tr>
+        </table>
+        {% for post in posts %}
+            <br>
+            <table>
+                <tr>
+                    <td class="post_user_info">{{post['author']}}</td>
+                    <td class="post_body"><span class="right">{{post['time']}}</span><span class="clear"></span></td>
+                </tr>
+                <tr>
+                    <td class="post_user_info"></td>
+                    <td class="post_body">{{post['message']|safe}}</td>
+                </tr>
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}

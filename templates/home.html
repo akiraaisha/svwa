@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block body %}
+    {% if session.logged_in %}
+        <div id="forum_list">
+            <table>
+                <tr>
+                    <th>Forum</th>
+                    <th class="minimize">Thread Count</th>
+                    <th class="minimize">Post Count</th>
+                </tr>
+                {% for forum in forums %}
+                <tr>
+                    <td>
+                        <a href="{{url_for('view_forum', forum_id=forum['id'])}}">{{forum['name']}}</a>
+                        <p>{{forum['description']}}</p>
+                    </td>
+                    <td class="minimize">{{forum['thread_count']}}</td>
+                    <td class="minimize">{{forum['post_count']}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div id="login_form">
+            <form name="login" title="Login" method="POST" action="{{ url_for('login') }}">
+                <table>
+                    <tr>
+                        <td>Username: </td>
+                        <td><input class="login_text" type="TEXT" name="username"/></td>
+                    </tr>
+                    <tr>
+                        <td>Password: </td>
+                        <td><input class="login_text" type="PASSWORD" name="password"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan=2><input class="right" type="SUBMIT" name="login" value="Login"/></td>
+                        <div class="clear">
+                    </tr>
+                </table>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}
