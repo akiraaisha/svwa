@@ -1,3 +1,6 @@
+*.db
+uploads
+
 *.py[co]
 
 # Packages

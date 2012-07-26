@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<script src="{{url_for('static', filename='view_forum.js')}}"></script>
     <div id="nav2">
         <h2><a href="{{url_for('home')}}">Index</a> > {{forum_name}}</h2>
     </div>
@@ -18,9 +19,14 @@
             </tr>
             {% if threads %}
                 {% for thread in threads %}
-                <tr>
+                <tr class="thread" id="{{thread['id']}}">
                     <td>
                         <a href="{{url_for('view_thread', thread_id=thread['id'])}}">{{thread['name']}}</a>
+                        <span class="thread_options">
+                            {% if thread['user_id'] == session['user_id'] %}
+                            <a href="#"><img class="delete_icon" src="{{url_for('static', filename='imgs/icon_post_delete.gif')}}" onclick="delete_thread({{thread['id']}})"></a>
+                            {% endif %}
+                        </span>
                     </td>
                     <td class="minimize">{{thread['author']}}</td>
                     <td class="minimize">{{thread['post_count']}}</td>

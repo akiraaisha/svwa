@@ -1,8 +1,30 @@
+.delete_icon {
+    background: none top left no-repeat;
+}
+
 .nav { 
     text-align: right; 
     font-size: 1.0em; 
     padding: 0.3em;
     margin-bottom: 1em; 
+}
+
+.thread_options {
+    float: right;
+}
+
+.post_user_info {
+    min-width: 15%;
+    max-width: 15%
+}
+
+.post_body_top {
+    font-size: 0.8em;
+    padding: 5px;
+}
+
+.post_body {
+    padding: 20px;
 }
 
 #nav2 {
@@ -102,6 +124,7 @@ h2 {
     width: 70%; 
     border: 5px solid #ccc;
     padding: 0.8em; 
+    padding-bottom: 2.4em;
     background: white; 
 }
 

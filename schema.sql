@@ -32,6 +32,7 @@ create table posts (
     thread integer not null,
     message string not null,
     time timestamp not null,
+    first_post boolean not null default false,
     FOREIGN KEY (author) REFERENCES users(id),
     FOREIGN KEY (thread) REFERENCES threads(id)
 );

@@ -1,5 +1,5 @@
 from globals import app
-import views # pyflakes.ignore
+import views
 from flask import g
 from db import connect_db
 
@@ -10,6 +10,8 @@ SECRET_KEY = 'svwa dev key'
 USERNAME = 'admin'
 PASSWORD = 'letmein1'
 SECURE = False
+UPLOAD_FOLDER = 'uploads'
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
 # Setup main app object
 app.config.from_object(__name__)

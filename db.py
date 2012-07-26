@@ -37,11 +37,27 @@ def insert_thread(forum_id, topic, message, user_id):
     insert_post(forum_id, thread_id, message, user_id, timestamp)
     return thread_id
 
-def insert_post(forum_id, thread_id, message, user_id, timestamp=str(util.timestamp())):
-    query_db('INSERT INTO posts (author, thread, message, time) VALUES\
-            (' + str(user_id) + ',' + str(thread_id) + ',"' + message + '",' + timestamp +')')
+def drop_thread(thread_id):
+    t = query_db('SELECT post_count, forum FROM threads WHERE id = ?', [thread_id], one=True)
+    forum_id = t['forum']
+    post_count = t['post_count']
+    query_db('DELETE FROM threads WHERE id = ?', [thread_id])
+    query_db('UPDATE forums SET thread_count = thread_count - 1, post_count = post_count - ? WHERE id = ?', [post_count, forum_id])
+
+def insert_post(forum_id, thread_id, message, user_id, first_post=False, timestamp=None):
+    if timestamp is None:
+        timestamp = str(util.timestamp())
+    query_db('INSERT INTO posts (author, thread, message, time, first_post) VALUES\
+            (' + str(user_id) + ',' + str(thread_id) + ',"' + message + '",' + timestamp +',' + first_post + ')')
     query_db('UPDATE forums SET post_count = post_count + 1 WHERE id = ' + str(forum_id))
     query_db('UPDATE threads SET post_count = post_count + 1 WHERE id = ' + str(thread_id))
+
+def drop_post(post_id):
+    thread = query_db('SELECT thread FROM posts WHERE id = ?', [post_id], one=True)['thread']
+    forum = query_db('SELECT forum FROM threads WHERE id = ?', [thread], one=True)['forum']
+    query_db('DELETE FROM posts WHERE id = ?', [post_id])
+    query_db('UPDATE forums SET post_count = post_count - 1 WHERE id = ?', [forum])
+    query_db('UPDATE threads SET post_count = post_count - 1 WHERE id = ?', [thread])
 
 ##### POPULATE DATABASE WITH THE FOLLOWING FUNCTION #####
 def populate_database():
