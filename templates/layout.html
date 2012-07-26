@@ -9,7 +9,9 @@
     <h1><a href="{{ url_for('home') }}" style="text-decoration:none;">SVWA</a></h1>
     <div class="nav">
         {% if session.logged_in %}
-            <a href="{{ url_for('upload') }}">File Management</a>
+            <span style="float:left;">Logged in as: {{session['username']}}</span>
+            <a href="{{ url_for('search') }}">Search</a> |
+            <a href="{{ url_for('upload') }}">File Management</a> |
             <a href="{{ url_for('logout') }}">Log Out</a>
         {% endif %}
     </div>
