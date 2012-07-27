@@ -2,7 +2,8 @@ drop table if exists users;
 create table users (
     id integer primary key autoincrement,
     username string not null,
-    password string not null
+    password string not null,
+    signature string
 );
 drop table if exists forums;
 create table forums (

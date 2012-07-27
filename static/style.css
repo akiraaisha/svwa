@@ -176,3 +176,8 @@ td, th {
     padding: 10px;
 }
 
+.signature {
+    border-top: 2px solid #ccc;
+    padding-top: 12px;
+    margin-top: 20px;
+}

@@ -25,12 +25,19 @@
                     <td class="post_body_top"><span class="right">{{post['time']}}</span><span class="clear"></span></td>
                 </tr>
                 <tr>
-                    <td class="post_user_info">
-                        {% if post['user_id'] == session['user_id'] %}
+                    <td class="post_user_info" style=vertical-align:top;>
+                        {% if post['user_id'] == session['user_id'] and not post['first_post'] %}
                         <a href="#"><img src="{{url_for('static', filename='imgs/icon_post_delete.gif')}}" onclick="delete_post({{post['id']}})"></a>
                         {% endif %}
                     </td>
-                    <td class="post_body">{{post['message']|safe}}</td>
+                    <td class="post_body">
+                        {{post['message']|safe}}
+                        {% if post['signature'] %}
+                            <div class=signature>
+                                {{post['signature']|safe}}
+                            </div>
+                        {% endif %}
+                    </td>
                 </tr>
             </table>
         </div>

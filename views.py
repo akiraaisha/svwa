@@ -60,7 +60,7 @@ def view_forum(forum_id):
 @app.route('/thread/<int:thread_id>')
 @login_required
 def view_thread(thread_id):
-    query = query_db('SELECT users.username AS author, posts.author AS user_id, posts.id AS id, posts.message AS message, datetime(posts.time, "unixepoch") AS time FROM posts, users WHERE thread = ? AND users.id = posts.author ORDER BY time', [thread_id])
+    query = query_db('SELECT users.username AS author, users.signature AS signature, posts.author AS user_id, posts.first_post AS first_post, posts.id AS id, posts.message AS message, datetime(posts.time, "unixepoch") AS time FROM posts, users WHERE thread = ? AND users.id = posts.author ORDER BY time', [thread_id])
     topic = query_db('SELECT title,forum FROM threads WHERE id = ?', [thread_id], one=True)
     forum = query_db('SELECT name FROM forums WHERE id = ?', [topic['forum']], one=True)
     return render_template('view_thread.html', thread_id=thread_id, posts=query, thread_topic=topic['title'], forum_id=topic['forum'], forum_name=forum['name'])
@@ -179,17 +179,30 @@ def update_profile():
         if cur_pass == '':
             error = 'You must always provide your current password.'
         else:
-            q = query_db('SELECT password FROM users WHERE id = ?', [session['user_id']], one=True)
+            q = query_db('SELECT password, signature FROM users WHERE id = ?', [session['user_id']], one=True)
             if q['password'] != cur_pass:
                 error = 'Current password was incorrect. No operation was executed.'
             else:
+                set_query = ''
+                query_params = list()
                 new_pass1 = request.form['new_pass1']
                 new_pass2 = request.form['new_pass2']
-                if new_pass1 != new_pass2:
-                    error = 'New passwords do not match. No operation was executed.'
-                else:
-                    query_db('UPDATE users SET password = ? WHERE id = ?', [new_pass1, session['user_id']])
-                    flash_msg = 'Password changed.\n'
+                old_signature = q['signature']
+                new_signature = request.form['signature']
+                if new_pass1 != '':
+                    if new_pass1 != new_pass2:
+                        error = 'New passwords do not match. Password was not changed.'
+                    else:
+                        set_query += 'password = ? '
+                        query_params.append(new_pass1)
+                        flash_msg += 'Password changed.\n'
+                if old_signature != new_signature:
+                    set_query += 'signature = ? '
+                    query_params.append(new_signature)
+                    flash_msg += 'Signature changed.\n'
+                query_params.append(session['user_id'])
+                if set_query != '':
+                    query_db('UPDATE users SET ' + set_query + 'WHERE id = ?', query_params)
     else:
         pass
         #user = get_user_info(session['user_id'])
