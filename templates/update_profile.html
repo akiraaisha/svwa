@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="update_profile">
+    <form method="POST">
+        <table>
+            <tr>
+                <th colspan=2>Updating {{session['username']}}'s Profile</th>
+            </tr>
+            <tr>
+                <td class=update_prof_left>Current Password:</td>   
+                <td class=update_prof_right><input type=password name=cur_pass></td>
+            </tr>
+            <tr>
+                <td class=update_prof_left>New Password:</td>
+                <td class=update_prof_right><input type=password name=new_pass1></td>
+            </tr>
+            <tr>
+                <td class=update_prof_left>Confirm New Password:</td>
+                <td class=update_prof_right><input type=password name=new_pass2></td>
+            </tr>
+            <tr>
+                <td class=update_prof_left>Signature</td>
+                <td class=update_prof_right><textarea name=signature cols=45 rows=5></textarea></td>
+            </tr>
+            <tr>
+                <th colspan=2>Forum Coin Options</th>
+            </tr>
+            <tr>
+                <td style=text-align:center; colspan=2>These are currently free for testing! Yay free money!</td>
+            <tr>
+                <td class=update_prof_left>Buy Coins:</td>
+                <td class=update_prof_right><input type=text name=buycoins></td>
+            </tr>
+            <tr>
+                <td class=update_prof_left>Sell Coins:</td>
+                <td class=update_prof_right><input type=text name=sellcoins></td>
+            </tr>
+            <tr>
+                <td class=update_prof_left rowspan=2>Trade Coins:</td>
+                <td>Amount: <input style=float:right;width:70%; type=text name=tradecoins_amt></td>
+            </tr>    
+            <tr>
+                <td>To User: <input style=float:right;width:70%; type=text name=tradecoins_dest></td>
+            </tr>
+            <tr>
+                <th colspan=2><input style=margin:auto;width:20%; type=submit name=submit value=submit></th>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}
