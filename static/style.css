@@ -153,3 +153,26 @@ td, th {
     width: 150px;
     text-align: center;
 }
+
+#update_profile {
+   width: 75%; 
+   margin: auto;
+}
+
+.update_prof_right input, .update_prof_right textarea {
+    width: 90%;
+    float: right;
+    margin: auto;
+    resize: none;
+}
+
+.update_prof_right {
+    padding: 10px;
+    margin: auto;
+}
+
+.update_prof_left {
+    width: 40%;
+    padding: 10px;
+}
+

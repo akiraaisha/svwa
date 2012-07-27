@@ -168,3 +168,38 @@ def search_execute():
     for t in thread_query:
         threads += (boilerplate % (t['id'], t['title'], t['author']))
     return jsonify(good=True,threads=threads)
+
+@app.route('/user', methods=['GET', 'POST'])
+@login_required
+def update_profile():
+    error = ''
+    flash_msg = ''
+    if request.method == 'POST':
+        cur_pass = request.form['cur_pass']
+        if cur_pass == '':
+            error = 'You must always provide your current password.'
+        else:
+            q = query_db('SELECT password FROM users WHERE id = ?', [session['user_id']], one=True)
+            if q['password'] != cur_pass:
+                error = 'Current password was incorrect. No operation was executed.'
+            else:
+                new_pass1 = request.form['new_pass1']
+                new_pass2 = request.form['new_pass2']
+                if new_pass1 != new_pass2:
+                    error = 'New passwords do not match. No operation was executed.'
+                else:
+                    query_db('UPDATE users SET password = ? WHERE id = ?', [new_pass1, session['user_id']])
+                    flash_msg = 'Password changed.\n'
+    else:
+        pass
+        #user = get_user_info(session['user_id'])
+    if error != '':
+        flash(error)
+    elif flash_msg != '':
+        flash(flash_msg)
+    return render_template('update_profile.html')
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+@login_required
+def view_profile():
+    return render_template('view_profile.html')
