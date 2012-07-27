@@ -3,6 +3,7 @@ create table users (
     id integer primary key autoincrement,
     username string not null,
     password string not null,
+    coins int not null default 0,
     signature string
 );
 drop table if exists forums;

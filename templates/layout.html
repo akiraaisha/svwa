@@ -9,15 +9,17 @@
     <h1><a href="{{ url_for('home') }}" style="text-decoration:none;">SVWA</a></h1>
     <div class="nav">
         {% if session.logged_in %}
-            <span style="float:left;">Logged in as: {{session['username']}}</span>
+            <span style="float:left;">
+                Logged in as: <a href="{{ url_for('update_profile') }}">{{session['username']}}</a>
+            </span>
             <a href="{{ url_for('search') }}">Search</a> |
             <a href="{{ url_for('upload') }}">File Management</a> |
             <a href="{{ url_for('logout') }}">Log Out</a>
         {% endif %}
     </div>
     <div id="flash_container">
-    {% for message in get_flashed_messages() %}
-        <div class=flash>{{ message }}</div>
+    {% for cat, message in get_flashed_messages(with_categories=true) %}
+        <div class={{cat}}>{{ message|safe }}</div>
     {% endfor %}
     </div>
     {% block body %}

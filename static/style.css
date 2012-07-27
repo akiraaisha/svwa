@@ -77,7 +77,14 @@ th, .nav {
 .flash { 
     background: #CEE5F5; 
     padding: 0.5em;
-    border: 1px solid #AACBE2; 
+    border: 1px solid #9090E0; 
+    margin-bottom: 10px;
+}
+
+.error { 
+    background: #F0D6D6; 
+    padding: 0.5em; 
+    border: 1px solid #E09090;
     margin-bottom: 10px;
 }
 
@@ -86,11 +93,6 @@ th, .nav {
     margin: 10px;
     padding: 30px;
     border: 0px none;
-}
-
-.error { 
-    background: #F0D6D6; 
-    padding: 0.5em; 
 }
 
 body { 
@@ -160,7 +162,7 @@ td, th {
 }
 
 .update_prof_right input, .update_prof_right textarea {
-    width: 90%;
+    width: 100%;
     float: right;
     margin: auto;
     resize: none;
@@ -172,7 +174,7 @@ td, th {
 }
 
 .update_prof_left {
-    width: 40%;
+    width: 50%;
     padding: 10px;
 }
 

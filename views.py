@@ -179,7 +179,7 @@ def update_profile():
         if cur_pass == '':
             error = 'You must always provide your current password.'
         else:
-            q = query_db('SELECT password, signature FROM users WHERE id = ?', [session['user_id']], one=True)
+            q = query_db('SELECT password, signature, coins FROM users WHERE id = ?', [session['user_id']], one=True)
             if q['password'] != cur_pass:
                 error = 'Current password was incorrect. No operation was executed.'
             else:
@@ -189,17 +189,51 @@ def update_profile():
                 new_pass2 = request.form['new_pass2']
                 old_signature = q['signature']
                 new_signature = request.form['signature']
+                coins_buy = request.form['buycoins']
+                coins_sell = request.form['sellcoins']
+                coins_trade_amt = request.form['tradecoins_amt']
+                coins_trade_dest= request.form['tradecoins_dest']
+                coins = start_coins = q['coins']
                 if new_pass1 != '':
                     if new_pass1 != new_pass2:
-                        error = 'New passwords do not match. Password was not changed.'
+                        error += 'New passwords do not match. Password was not changed.<br>'
                     else:
-                        set_query += 'password = ? '
+                        set_query += 'password = ?, '
                         query_params.append(new_pass1)
-                        flash_msg += 'Password changed.\n'
+                        flash_msg += 'Password changed.<br>'
                 if old_signature != new_signature:
-                    set_query += 'signature = ? '
+                    set_query += 'signature = ?, '
                     query_params.append(new_signature)
-                    flash_msg += 'Signature changed.\n'
+                    flash_msg += 'Signature changed.<br>'
+                if coins_buy:
+                    if coins_buy.isdigit():
+                        coins += int(coins_buy)
+                        flash_msg += 'Purchased %s coins.' % coins_buy
+                    else:
+                        error += 'Could not buy coins. The value given was invalid.<br>'
+                if coins_sell:
+                    if coins_sell.isdigit():
+                        coins -= int(coins_sell)
+                        flash_msg += 'Sold %s coins.' % coins_sell
+                    else:
+                        error += 'Could not sell coins. The value given was invalid.<br>'
+                if coins_trade_dest:
+                    trade_dest = query_db('SELECT id FROM users WHERE username = ?', [coins_trade_dest], one=True)
+                    if trade_dest is not None:
+                        if coins_trade_amt.isdigit():
+                            coins -= int(coins_trade_amt)
+                            query_db('UPDATE users SET coins = ? WHERE id = ?', [coins_trade_amt, trade_dest['id']])
+                            flash_msg += 'Transferred %s coins to %s.' % [coins_trade_amt, coins_trade_dest]
+                        else:
+                            error += 'Could not trade coins. The value given was invalid.<br>'
+                    else:
+                        error += 'Could not trade coins. The recipient does not exist.<br>'
+                set_query += 'coins = ? '
+                if coins < 0:
+                    query_params.append(start_coins)
+                    error += 'Unable to process transaction. You do not have enough coins.<br>'
+                else:
+                    query_params.append(coins)
                 query_params.append(session['user_id'])
                 if set_query != '':
                     query_db('UPDATE users SET ' + set_query + 'WHERE id = ?', query_params)
@@ -207,10 +241,11 @@ def update_profile():
         pass
         #user = get_user_info(session['user_id'])
     if error != '':
-        flash(error)
-    elif flash_msg != '':
-        flash(flash_msg)
-    return render_template('update_profile.html')
+        flash(error, 'error')
+    if flash_msg != '':
+        flash(flash_msg, 'flash')
+    coins = query_db('SELECT coins FROM users WHERE id = ?', [session['user_id']], one=True)['coins']
+    return render_template('update_profile.html', coins=coins)
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 @login_required
