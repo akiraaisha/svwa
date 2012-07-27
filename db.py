@@ -48,7 +48,7 @@ def insert_post(forum_id, thread_id, message, user_id, first_post=False, timesta
     if timestamp is None:
         timestamp = str(util.timestamp())
     query_db('INSERT INTO posts (author, thread, message, time, first_post) VALUES\
-            (' + str(user_id) + ',' + str(thread_id) + ',"' + message + '",' + timestamp +',' + first_post + ')')
+            (' + str(user_id) + ',' + str(thread_id) + ',"' + message + '",' + timestamp +',' + str(b2i(first_post)) + ')')
     query_db('UPDATE forums SET post_count = post_count + 1 WHERE id = ' + str(forum_id))
     query_db('UPDATE threads SET post_count = post_count + 1 WHERE id = ' + str(thread_id))
 
@@ -79,3 +79,10 @@ def populate_database():
     insert_thread(1, 'Still need more...', 'keep going!', 3)
     insert_thread(1, 'lookin good', 'zzz', 2)
     insert_thread(2, 'SPAM', 'SPAM', 2)
+
+### helper functions ###
+def i2b(n):
+    return n == 1
+
+def b2i(b):
+    return 1 if b else 0
