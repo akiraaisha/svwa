@@ -191,7 +191,7 @@ def search():
 @app.route('/search/execute', methods=['POST'])
 @login_required
 def search_execute():
-    q = query_db('SELECT thread FROM posts WHERE message LIKE "%' + request.form['query'] + '%" ORDER BY time')
+    q = query_db('SELECT thread FROM posts WHERE message LIKE ? ORDER BY time', ['%' + request.form['query'] + '%'])
     unique_threads = list()
     for p in q:
         if p['thread'] in unique_threads:
@@ -205,7 +205,8 @@ def search_execute():
         sql_in = sql_in[:-1] + ")"
     else:
         return jsonify(good=False)
-    thread_query = query_db('SELECT threads.id AS id, users.username AS author, threads.author AS user_id, threads.title AS title FROM threads, users ' + sql_in + " AND users.id == threads.author")
+    thread_query = query_db('SELECT threads.id AS id, users.username AS author, threads.author AS user_id, \
+            threads.title AS title FROM threads, users ' + sql_in + ' AND users.id == threads.author')
     boilerplate = "<tr class=search_result id=thread_%d><td>%s</td><td>%s</td></tr>"
     threads = ""
     for t in thread_query:
