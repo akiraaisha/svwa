@@ -45,7 +45,11 @@ def login():
     password = request.form['password']
     action = request.form['action']
     if action == 'Login':
-        user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
+        user = None
+        if app.config['SECURE']:
+            user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], one=True)
+        else:
+            user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
         if user is None:
             flash('Login failed.', 'flash')
         else:
