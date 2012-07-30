@@ -41,11 +41,20 @@ delete_post = function(id) {
                         {% endif %}
                     </td>
                     <td class="post_body">
-                        {{post['message']|safe}}
-                        {% if post['signature'] %}
-                            <div class=signature>
-                                {{post['signature']|safe}}
-                            </div>
+                        {% if config['SECURE'] %}
+                            {{post['message']}}
+                            {% if post['signature'] %}
+                                <div class=signature>
+                                    {{post['signature']}}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {{post['message']|safe}}
+                            {% if post['signature'] %}
+                                <div class=signature>
+                                    {{post['signature']|safe}}
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

@@ -1,7 +1,8 @@
 flash = function(msg, type) {
     clear_flash();
     if (typeof(type) === 'undefined') type="flash"
-    $('#flash_container').append('<div class="'+ type +'">' + msg + '</div>');
+    $('#flash_container').append('<div class="'+ type +'"></div>');
+    $('div.' + type).text(msg);
 };
 
 clear_flash = function() {
