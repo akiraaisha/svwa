@@ -67,6 +67,19 @@ def drop_post(post_id):
 def set_user_group(user, gid):
     query_db('UPDATE users SET group_id = ? WHERE username = ?', [gid, user])
 
+def check_password(username, password):
+    user = None
+    if app.config['SECURE']:
+        user = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
+    else:
+        user = query_db('SELECT * FROM users WHERE username = "' + username + '"', one=True)
+    if user is not None:
+        hash_pw = hashlib.sha512(user['salt'] + password).hexdigest()
+        if hash_pw == user['password']:
+            return user
+    else:
+        return None
+
 ##### POPULATE DATABASE WITH THE FOLLOWING FUNCTION #####
 def populate_database():
     create_user("kyle", "password")

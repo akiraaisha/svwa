@@ -1,6 +1,6 @@
-from flask import session, render_template, request, flash, url_for, redirect, jsonify, send_from_directory
+from flask import session, render_template, request, flash, url_for, redirect, jsonify, send_from_directory, Markup
 from werkzeug import secure_filename
-from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post, create_user
+from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post, create_user, check_password
 import os
 import re
 import hashlib
@@ -47,21 +47,16 @@ def login():
     password = request.form['password']
     action = request.form['action']
     if action == 'Login':
-        user = None
-        if app.config['SECURE']:
-            user = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
-        else:
-            user = query_db('SELECT * FROM users WHERE username = "' + username + '"', one=True)
-        if user is None:
-            flash('Login failed.', 'flash')
-        else:
-            hash_pw = hashlib.sha512(user['salt'] + password).hexdigest()
+        user = check_password(username, password)
+        if user is not None:
             session['session_id'] = user['id']
             session['user_id'] = user['id']
             session['logged_in'] = True
             session['username'] = user['username']
             session['is_admin'] = (user.get('group_id') == app.config['ADMIN_GROUP_ID'])
             flash('Welcome ' + user['username'], 'flash')
+        else:
+            flash('Login failed.', 'error')
     elif action =='Register':
         username = request.form['username']
         password = request.form['password']
@@ -226,8 +221,8 @@ def update_profile():
     elif cur_pass == '':
         error = 'You must always provide your current password.'
     else:
-        q = query_db('SELECT password, signature, coins FROM users WHERE id = ?', [session['user_id']], one=True)
-        if q['password'] != cur_pass:
+        q = check_password(session['username'], cur_pass)
+        if q is None:
             error = 'Current password was incorrect. No operation was executed.'
         else:
             set_query = ''
@@ -255,13 +250,13 @@ def update_profile():
             if coins_buy:
                 if coins_buy.isdigit():
                     coins += int(coins_buy)
-                    flash_msg += 'Purchased %s coins.' % coins_buy
+                    flash_msg += 'Purchased %s coins.<br>' % coins_buy
                 else:
                     error += 'Could not buy coins. The value given was invalid.<br>'
             if coins_sell:
                 if coins_sell.isdigit():
                     coins -= int(coins_sell)
-                    flash_msg += 'Sold %s coins.' % coins_sell
+                    flash_msg += 'Sold %s coins.<br>' % coins_sell
                 else:
                     error += 'Could not sell coins. The value given was invalid.<br>'
             if coins_trade_dest:
@@ -270,7 +265,7 @@ def update_profile():
                     if coins_trade_amt.isdigit():
                         coins -= int(coins_trade_amt)
                         query_db('UPDATE users SET coins = ? WHERE id = ?', [coins_trade_amt, trade_dest['id']])
-                        flash_msg += 'Transferred %s coins to %s.' % [coins_trade_amt, coins_trade_dest]
+                        flash_msg += 'Transferred %s coins to %s.<br>' % [coins_trade_amt, coins_trade_dest]
                     else:
                         error += 'Could not trade coins. The value given was invalid.<br>'
                 else:
@@ -285,9 +280,9 @@ def update_profile():
             if set_query != '':
                 query_db('UPDATE users SET ' + set_query + 'WHERE id = ?', query_params)
     if error != '':
-        flash(error, 'error')
+        flash(Markup(error), 'error')
     if flash_msg != '':
-        flash(flash_msg, 'flash')
+        flash(Markup(flash_msg), 'flash')
     coins = query_db('SELECT coins FROM users WHERE id = ?', [session['user_id']], one=True)['coins']
     return render_template('update_profile.html', coins=coins)
 
