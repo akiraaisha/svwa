@@ -24,7 +24,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            if not session['is_admin']:
+            if app.config['SECURE'] and not session['is_admin']:
                 return redirect(url_for('home'))
             return f(*args, **kwargs)
         except KeyError:
