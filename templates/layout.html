@@ -12,6 +12,9 @@
             <span style="float:left;">
                 Logged in as: <a href="{{ url_for('update_profile') }}">{{session['username']}}</a>
             </span>
+            {% if session.is_admin %}
+                <a href="{{ url_for('admin_home') }}">Admin</a> |
+            {% endif %}
             <a href="{{ url_for('search') }}">Search</a> |
             <a href="{{ url_for('upload') }}">File Management</a> |
             <a href="{{ url_for('logout') }}">Log Out</a>

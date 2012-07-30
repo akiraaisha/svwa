@@ -12,17 +12,23 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session['user_id'] is None:
+        try:
+            if session['user_id'] is None:
+                return redirect(url_for('home'))
+            return f(*args, **kwargs)
+        except KeyError:
             return redirect(url_for('home'))
-        return f(*args, **kwargs)
     return decorated_function
 
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session['is_admin']:
+        try:
+            if not session['is_admin']:
+                return redirect(url_for('home'))
+            return f(*args, **kwargs)
+        except KeyError:
             return redirect(url_for('home'))
-        return f(*args, **kwargs)
     return decorated_function
 
 ### VIEWS ###
@@ -39,14 +45,14 @@ def login():
     password = request.form['password']
     user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
     if user is None:
-        flash('Login failed.')
+        flash('Login failed.', 'flash')
     else:
         session['session_id'] = user['id']
         session['user_id'] = user['id']
         session['logged_in'] = True
         session['username'] = user['username']
-        session['is_admin'] = user['group'] == 1
-        flash('Welcome ' + user['username'])
+        session['is_admin'] = (user.get('group_id') == app.config['ADMIN_GROUP_ID'])
+        flash('Welcome ' + user['username'], 'flash')
     return redirect(url_for('home'))
 
 @app.route('/logout')
@@ -57,7 +63,7 @@ def logout():
     session.pop('user_id', None)
     session.pop('username', None)
     session.pop('is_admin', False)
-    flash('You have been logged out')
+    flash('You have been logged out', 'flash')
     return redirect(url_for('home'))
 
 @app.route('/forum/<int:forum_id>')
@@ -113,6 +119,7 @@ def delete_post(post_id):
 
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_home():
     if request.method == 'POST':
         action = request.form['action']
@@ -122,7 +129,7 @@ def admin_home():
             init_db()
             populate_database()
         else:
-            flash('Unknown action.')
+            flash('Unknown action.', 'flash')
     return render_template('admin_home.html')
 
 def allowed_file(filename):
@@ -136,7 +143,7 @@ def upload():
         if file and (not app.config['SECURE'] or allowed_file(file.filename)):
             filename = secure_filename(file.filename) if app.config['SECURE'] else file.filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash("Your file was uploaded to " + request.url_root + app.config['UPLOAD_FOLDER'] + "/" + filename)
+            flash("Your file was uploaded to " + request.url_root + app.config['UPLOAD_FOLDER'] + "/" + filename, 'flash')
             redirect(url_for('home'))
     return render_template('upload_file.html')
 

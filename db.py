@@ -59,9 +59,13 @@ def drop_post(post_id):
     query_db('UPDATE forums SET post_count = post_count - 1 WHERE id = ?', [forum])
     query_db('UPDATE threads SET post_count = post_count - 1 WHERE id = ?', [thread])
 
+def set_user_group(user, gid):
+    query_db('UPDATE users SET group_id = ? WHERE username = ?', [gid, user])
+
 ##### POPULATE DATABASE WITH THE FOLLOWING FUNCTION #####
 def populate_database():
     create_user("kyle", "password")
+    set_user_group("kyle", app.config['ADMIN_GROUP_ID'])
     create_user("admin", "h1ghlys3cur3")
     create_user("bob", "bob")
     create_user("alice", "alice")

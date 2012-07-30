@@ -1,7 +1,7 @@
 from globals import app
 import views
 from flask import g
-from db import connect_db
+from db import connect_db, populate_database
 
 #config
 DATABASE = 'svwa.db'
@@ -12,6 +12,7 @@ PASSWORD = 'letmein1'
 SECURE = False
 UPLOAD_FOLDER = 'uploads'
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+ADMIN_GROUP_ID = 4
 
 # Setup main app object
 app.config.from_object(__name__)

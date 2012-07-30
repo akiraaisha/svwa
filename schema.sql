@@ -4,6 +4,7 @@ create table users (
     username string not null,
     password string not null,
     coins int not null default 0,
+    group_id int not null default 0,
     signature string
 );
 drop table if exists forums;
