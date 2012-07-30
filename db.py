@@ -3,6 +3,7 @@ from contextlib import closing
 from flask import g
 from globals import app
 import util
+import hashlib
 
 ### DATABASE FUNCTIONS ###
 def connect_db():
@@ -22,7 +23,8 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 def create_user(username, password):
-    query_db('insert into users (username, password) VALUES (?, ?)', [username, password])
+    pw_hash = hashlib.sha512(password + app.config['SECRET_KEY']).hexdigest()
+    query_db('insert into users (username, password) VALUES (?, ?)', [username, pw_hash])
 
 def create_forum(name, description):
     query_db('INSERT INTO forums (name, description) VALUES (?, ?)', [name, description])

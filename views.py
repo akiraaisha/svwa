@@ -1,8 +1,9 @@
 from flask import session, render_template, request, flash, url_for, redirect, jsonify, send_from_directory
 from werkzeug import secure_filename
-from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post
+from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post, create_user
 import os
 import re
+import hashlib
 from functools import wraps
 from globals import app
 
@@ -44,13 +45,14 @@ def home():
 def login():
     username = request.form['username']
     password = request.form['password']
+    hash_pw = hashlib.sha512(password + app.config['SECRET_KEY']).hexdigest()
     action = request.form['action']
     if action == 'Login':
         user = None
         if app.config['SECURE']:
-            user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], one=True)
+            user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, hash_pw], one=True)
         else:
-            user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
+            user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + hash_pw + '"', one=True)
         if user is None:
             flash('Login failed.', 'flash')
         else:
@@ -65,7 +67,7 @@ def login():
         password = request.form['password']
         check = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
         if check is None:
-            query_db('INSERT INTO users (username, password) VALUES (?, ?)', [username, password])
+            create_user(username, password)
             flash('You successfully registered as ' + username, 'flash')
         else:
             flash('Your username, ' + username + ', is already taken.', 'error')
