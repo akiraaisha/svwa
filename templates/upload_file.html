@@ -1,21 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>
-    $('#search').submit(function(){
-        $.post($SCRIPT_ROOT + 'upload/search/', {filename: $('input[name=filename]').val()},function(data){
+    search = function(){
+        $file = $('input[name=filename]').val();
+        $.post($SCRIPT_ROOT + 'upload/search', {filename: $file},function(data){
             $('#search_output').empty();
-            $('#search_output').append(data.files);
+            $('#search_output').html(data.files);
         });
-    });
+    };
 </script>
 <form method="POST" enctype=multipart/form-data>
     <input type=file name=file>
     <input type=submit value=Upload>
 </form>
 <form action=# id=search>
-    doesnt work yet
     <input type=text name=filename>
-    <input type=submit value=Search>
+    <input type=button onclick=search() value=Search>
 </form>
 <br>
 <div id=search_output>

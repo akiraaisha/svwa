@@ -143,7 +143,10 @@ def upload():
 @app.route('/upload/search', methods=['POST','GET'])
 @login_required
 def search_uploads():
-    return jsonify(files=os.system('ls ' + app.config['UPLOAD_FOLDER'] + ' | grep ' + request.form['filename']))
+    output = os.popen('ls ' + app.config['UPLOAD_FOLDER'] + ' | grep ' + request.form['filename']).read()
+    output = output.replace('\n', '<br>')
+    app.logger.debug(output)
+    return jsonify(files=output)
 
 @app.route('/uploads/<filename>')
 @login_required
