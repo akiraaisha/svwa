@@ -43,16 +43,27 @@ def home():
 def login():
     username = request.form['username']
     password = request.form['password']
-    user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
-    if user is None:
-        flash('Login failed.', 'flash')
-    else:
-        session['session_id'] = user['id']
-        session['user_id'] = user['id']
-        session['logged_in'] = True
-        session['username'] = user['username']
-        session['is_admin'] = (user.get('group_id') == app.config['ADMIN_GROUP_ID'])
-        flash('Welcome ' + user['username'], 'flash')
+    action = request.form['action']
+    if action == 'Login':
+        user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + password + '"', one=True)
+        if user is None:
+            flash('Login failed.', 'flash')
+        else:
+            session['session_id'] = user['id']
+            session['user_id'] = user['id']
+            session['logged_in'] = True
+            session['username'] = user['username']
+            session['is_admin'] = (user.get('group_id') == app.config['ADMIN_GROUP_ID'])
+            flash('Welcome ' + user['username'], 'flash')
+    elif action =='Register':
+        username = request.form['username']
+        password = request.form['password']
+        check = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
+        if check is None:
+            query_db('INSERT INTO users (username, password) VALUES (?, ?)', [username, password])
+            flash('You successfully registered as ' + username, 'flash')
+        else:
+            flash('Your username, ' + username + ', is already taken.', 'error')
     return redirect(url_for('home'))
 
 @app.route('/logout')
