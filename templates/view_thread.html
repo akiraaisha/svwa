@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
-<script src="{{url_for('static', filename='view_thread.js')}}"></script>
+<script>
+delete_post = function(id) {
+    $.post($SCRIPT_ROOT + 'post/delete/' + id, {_csrf_token: $csrf}, function(data) {
+        if (data.delete){
+            $('.post#' + id).remove();
+        } else {
+            flash("Unable to delete thread " + id);
+        }
+    });
+};
+</script>
     <div id="nav2">
         <h2><a href="{{url_for('home')}}">Index</a> > <a href="{{url_for('view_forum', forum_id=forum_id)}}">{{forum_name}}</a> > {{thread_topic}}</h2>
     </div>

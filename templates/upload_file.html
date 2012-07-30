@@ -3,13 +3,14 @@
 <script>
     search = function(){
         $file = $('input[name=filename]').val();
-        $.post($SCRIPT_ROOT + 'upload/search', {filename: $file},function(data){
+        $.post($SCRIPT_ROOT + 'upload/search', {filename: $file, _csrf_token: $csrf},function(data){
             $('#search_output').empty();
             $('#search_output').html(data.files);
         });
     };
 </script>
 <form method="POST" enctype=multipart/form-data>
+    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
     <input type=file name=file>
     <input type=submit value=Upload>
 </form>

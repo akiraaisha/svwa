@@ -10,6 +10,7 @@
             <tr>
                 <td>
                     <form name="new_post" method="POST" action="{{url_for('new_post', thread_id=thread_id)}}">
+                        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                         <textarea class="post" name="message" cols="75" rows="15"></textarea>
                         <br>
                         <input type="SUBMIT" name="submit_post" value="Post" style="margin-top:8px;float:right;width:80px">

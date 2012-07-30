@@ -2,6 +2,7 @@
 {% block body %}
     <div id="new_thread_form">
         <form name="new_thread" action="{{url_for('new_thread', forum_id=forum_id)}}" method="POST">
+            <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
             <table>
                 <tr>
                     <td>

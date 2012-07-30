@@ -23,6 +23,7 @@
     {% else %}
         <div id="login_form">
             <form name="login" title="Login" method="POST" action="{{ url_for('login') }}">
+                <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
                 <table>
                     <tr>
                         <td>Username: </td>

@@ -4,6 +4,7 @@
 <script src="{{url_for('static', filename="shared.js")}}"></script>
 <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.url_root|tojson|safe }};
+    $csrf = "{{ csrf_token() }}";
 </script>
 <div class="page">
     <h1>

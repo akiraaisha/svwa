@@ -2,6 +2,7 @@
 {% block body %}
 <div id="admin">
     <form name="admin_commands" method="POST" action="{{url_for('admin_home')}}">
+        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
         <input type="SUBMIT" name="action" value="populate_db">
         <input type="SUBMIT" name="action" value="reset_db">
         <input type="SUBMIT" name="action" value="Toggle Security">

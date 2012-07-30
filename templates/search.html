@@ -8,7 +8,7 @@
         if ($q == ""){
             flash("Please enter a search term.", "error");
         } else {
-            $.post($SCRIPT_ROOT + "search/execute", {query: $q}, function(data){
+            $.post($SCRIPT_ROOT + "search/execute", {query: $q, _csrf_token: $csrf_token}, function(data){
                 if (data.good){
                     $("#search_results").append("<tr><th style=width:70%;>Thread</th><th>Author</th></tr>" + data.threads);    
                 } else {

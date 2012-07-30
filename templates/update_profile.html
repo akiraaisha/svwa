@@ -2,6 +2,7 @@
 {% block body %}
 <div id="update_profile">
     <form method="GET">
+        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
         <table>
             <tr>
                 <th colspan=2>Updating {{session['username']}}'s Profile</th>
