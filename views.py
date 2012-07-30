@@ -2,6 +2,7 @@ from flask import session, render_template, request, flash, url_for, redirect, j
 from werkzeug import secure_filename
 from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post
 import os
+import re
 from functools import wraps
 from globals import app
 
@@ -165,18 +166,22 @@ def upload():
             redirect(url_for('home'))
     return render_template('upload_file.html')
 
+SEARCH_FILES_RE = re.compile('\A[a-zA-Z0-9_\-.]+\Z')
 @app.route('/upload/search', methods=['POST','GET'])
 @login_required
 def search_uploads():
-    output = os.popen('ls ' + app.config['UPLOAD_FOLDER'] + ' | grep ' + request.form['filename']).read()
+    search = request.form['filename']
+    if app.config['SECURE'] and not SEARCH_FILES_RE.match(search):
+        return jsonify(result=False)
+    output = os.popen('ls ' + app.config['UPLOAD_FOLDER'] + ' | grep ' + search).read()
     output = output.replace('\n', '<br>')
     app.logger.debug(output)
-    return jsonify(files=output)
+    return jsonify(result=True, files=output)
 
 @app.route('/uploads/<filename>')
 @login_required
 def uploaded_file(filename):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/search')
 @login_required

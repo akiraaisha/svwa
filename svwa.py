@@ -29,11 +29,12 @@ def before_request():
 @app.teardown_request
 def teardown_request(exception):
     g.db.close()
+    session.pop('_csrf_token', None)
 
 ### CSRF PROTECTION FUNCTIONS ###
 def csrf_protect():
     if request.method == 'POST':
-        token = session.pop('_csrf_token', None)
+        token = session.get('_csrf_token', None)
         app.logger.debug('CSRF Token: %s' % token)
         if not token or token != request.form.get('_csrf_token'):
             abort(403)

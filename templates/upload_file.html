@@ -5,7 +5,12 @@
         $file = $('input[name=filename]').val();
         $.post($SCRIPT_ROOT + 'upload/search', {filename: $file, _csrf_token: $csrf},function(data){
             $('#search_output').empty();
-            $('#search_output').html(data.files);
+            clear_flash();
+            if (data.result) {
+                $('#search_output').html(data.files);
+            } else {
+                flash('File search failed.', 'error');
+            }
         });
     };
 </script>
