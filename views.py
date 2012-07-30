@@ -45,17 +45,17 @@ def home():
 def login():
     username = request.form['username']
     password = request.form['password']
-    hash_pw = hashlib.sha512(password + app.config['SECRET_KEY']).hexdigest()
     action = request.form['action']
     if action == 'Login':
         user = None
         if app.config['SECURE']:
-            user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, hash_pw], one=True)
+            user = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
         else:
-            user = query_db('SELECT * FROM users WHERE username = "' + username + '" AND password = "' + hash_pw + '"', one=True)
+            user = query_db('SELECT * FROM users WHERE username = "' + username + '"', one=True)
         if user is None:
             flash('Login failed.', 'flash')
         else:
+            hash_pw = hashlib.sha512(user['salt'] + password).hexdigest()
             session['session_id'] = user['id']
             session['user_id'] = user['id']
             session['logged_in'] = True

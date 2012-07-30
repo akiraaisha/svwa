@@ -4,6 +4,8 @@ from flask import g
 from globals import app
 import util
 import hashlib
+import os
+import base64
 
 ### DATABASE FUNCTIONS ###
 def connect_db():
@@ -23,8 +25,9 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 def create_user(username, password):
-    pw_hash = hashlib.sha512(password + app.config['SECRET_KEY']).hexdigest()
-    query_db('insert into users (username, password) VALUES (?, ?)', [username, pw_hash])
+    salt = base64.b64encode(os.urandom(32))
+    pw_hash = hashlib.sha512(salt + password).hexdigest()
+    query_db('insert into users (username, password, salt) VALUES (?, ?, ?)', [username, pw_hash, salt])
 
 def create_forum(name, description):
     query_db('INSERT INTO forums (name, description) VALUES (?, ?)', [name, description])
