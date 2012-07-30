@@ -6,7 +6,12 @@
     $SCRIPT_ROOT = {{ request.url_root|tojson|safe }};
 </script>
 <div class="page">
-    <h1><a href="{{ url_for('home') }}" style="text-decoration:none;">SVWA</a></h1>
+    <h1>
+        <a href="{{ url_for('home') }}" style="text-decoration:none;">SVWA</a>
+        {% if config['SECURE'] %}
+            (Secure Mode)
+        {% endif %}
+    </h1>
     <div class="nav">
         {% if session.logged_in %}
             <span style="float:left;">

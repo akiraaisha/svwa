@@ -139,6 +139,9 @@ def admin_home():
         elif action == 'reset_db':
             init_db()
             populate_database()
+        elif action == 'Toggle Security':
+            app.config['SECURE'] = not app.config['SECURE']
+            flash('SVWA is now ' + ('secure' if app.config['SECURE'] else 'insecure'), 'flash')
         else:
             flash('Unknown action.', 'flash')
     return render_template('admin_home.html')
