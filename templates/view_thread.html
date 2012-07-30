@@ -6,7 +6,7 @@ delete_post = function(id) {
         if (data.delete){
             $('.post#' + id).remove();
         } else {
-            flash("Unable to delete thread " + id);
+            flash("Unable to delete post " + id);
         }
     });
 };
