@@ -2,9 +2,7 @@ from globals import app
 import views
 from flask import g, request, session, abort
 from db import connect_db, populate_database
-import base64
-import hashlib
-import os
+from util import generate_random_string
 
 #config
 DATABASE = 'svwa.db'
@@ -12,7 +10,7 @@ DEBUG = True
 SECRET_KEY = 'svwa dev key'
 USERNAME = 'admin'
 PASSWORD = 'letmein1'
-SECURE = False
+SECURE = True
 UPLOAD_FOLDER = 'uploads'
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 ADMIN_GROUP_ID = 4
@@ -44,18 +42,6 @@ def generate_csrf_token():
     if '_csrf_token' not in session:
         session['_csrf_token'] = generate_random_string()
     return session['_csrf_token']
-
-def generate_random_string():
-    user = ''
-    if 'username' in session:
-        user = session['username']
-    else:
-        user = 'guest'
-    sha = hashlib.sha256()
-    sha.update(user)
-    sha.update(os.urandom(32))
-    sha.update(app.config['SECRET_KEY'])
-    return base64.b64encode(sha.digest())
 
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 ### END CSRF PROTECTION ###
