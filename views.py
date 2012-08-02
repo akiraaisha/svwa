@@ -3,7 +3,6 @@ from werkzeug import secure_filename
 from db import query_db, insert_post, insert_thread, populate_database, init_db, drop_thread, drop_post, create_user, check_password
 import os
 import re
-import hashlib
 from functools import wraps
 from globals import app
 
@@ -195,15 +194,14 @@ def search_execute():
             continue
         else:
             unique_threads.append(p['thread'])
-    sql_in = "WHERE threads.id IN ("
-    for x in unique_threads:
-        sql_in = sql_in + str(x) + ","
+    query = 'SELECT threads.id AS id, users.username AS author, threads.author AS user_id, \
+            threads.title AS title FROM threads, users  WHERE threads.id = ? AND users.id == threads.author'
+    thread_query = list()
     if len(unique_threads) > 0:
-        sql_in = sql_in[:-1] + ")"
+        for x in unique_threads:
+            thread_query.append(query_db(query, [x], one=True))
     else:
         return jsonify(good=False)
-    thread_query = query_db('SELECT threads.id AS id, users.username AS author, threads.author AS user_id, \
-            threads.title AS title FROM threads, users ' + sql_in + ' AND users.id == threads.author')
     boilerplate = "<tr class=search_result id=thread_%d><td>%s</td><td>%s</td></tr>"
     threads = ""
     for t in thread_query:
