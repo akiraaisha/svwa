@@ -49,4 +49,4 @@ app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 ### Entry Point ###
 if __name__ == '__main__':
-    app.run(host='ubuntu-vm')
+    app.run()
